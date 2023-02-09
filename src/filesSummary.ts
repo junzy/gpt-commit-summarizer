@@ -23,10 +23,11 @@ export function preprocessCommitMessage(commitMessage: string): string {
 }
 
 const OPEN_AI_PROMPT = `${SHARED_PROMPT}
-The following is a git diff of a single file.
-Please summarize it in a comment, describing the changes made in the diff in high level.
+The following is a git diff of a list of files.
+Please summarize the diff and come up with a name for the pull request along with its description
 Do it in the following way:
-Write \`SUMMARY:\` and then write a summary of the changes made in the diff, as a bullet point list.
+Write \`Pull Request Name:\` and then write a name for the pull request
+Write \`Description:\` and then write a bullet pointed summary of the changes as the description
 Every bullet point should start with a \`*\`.
 `;
 
@@ -174,36 +175,32 @@ export async function getFilesSummaries(
     result[modifiedFile] = fileAnalysisAndSummary;
     const comment = `GPT summary of [${modifiedFiles[
       modifiedFile
-    ].originSha.slice(0, 6)}](https://github.com/${repository.owner.login}/${
-      repository.name
-    }/blob/${baseCommitSha}/${modifiedFile}#${
-      modifiedFiles[modifiedFile].originSha
-    }) - [${modifiedFiles[modifiedFile].sha.slice(0, 6)}](https://github.com/${
-      repository.owner.login
-    }/${repository.name}/blob/${headCommitSha}/${modifiedFile}#${
-      modifiedFiles[modifiedFile].sha
-    }):\n${fileAnalysisAndSummary}`;
+    ].originSha.slice(0, 6)}](https://github.com/${repository.owner.login}/${repository.name
+      }/blob/${baseCommitSha}/${modifiedFile}#${modifiedFiles[modifiedFile].originSha
+      }) - [${modifiedFiles[modifiedFile].sha.slice(0, 6)}](https://github.com/${repository.owner.login
+      }/${repository.name}/blob/${headCommitSha}/${modifiedFile}#${modifiedFiles[modifiedFile].sha
+      }):\n${fileAnalysisAndSummary}`;
     console.log(
       `Adding comment to line ${modifiedFiles[modifiedFile].position}`
     );
-    await octokit.pulls.createReviewComment({
-      owner: repository.owner.login,
-      repo: repository.name,
-      pull_number: pullNumber,
-      commit_id: headCommitSha,
-      path: modifiedFiles[modifiedFile].filename,
-      line: Number.isFinite(modifiedFiles[modifiedFile].position)
-        ? modifiedFiles[modifiedFile].position > 0
-          ? modifiedFiles[modifiedFile].position
-          : 1
-        : 1,
-      side:
-        modifiedFiles[modifiedFile].position > 0 ||
-        modifiedFiles[modifiedFile].originSha === "None"
-          ? "RIGHT"
-          : "LEFT",
-      body: comment,
-    });
+    // await octokit.pulls.createReviewComment({
+    //   owner: repository.owner.login,
+    //   repo: repository.name,
+    //   pull_number: pullNumber,
+    //   commit_id: headCommitSha,
+    //   path: modifiedFiles[modifiedFile].filename,
+    //   line: Number.isFinite(modifiedFiles[modifiedFile].position)
+    //     ? modifiedFiles[modifiedFile].position > 0
+    //       ? modifiedFiles[modifiedFile].position
+    //       : 1
+    //     : 1,
+    //   side:
+    //     modifiedFiles[modifiedFile].position > 0 ||
+    //       modifiedFiles[modifiedFile].originSha === "None"
+    //       ? "RIGHT"
+    //       : "LEFT",
+    //   body: comment,
+    // });
     summarizedFiles += 1;
     if (summarizedFiles >= MAX_FILES_TO_SUMMARIZE) {
       break;

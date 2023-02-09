@@ -11,7 +11,7 @@ import { SHARED_PROMPT } from "./sharedPrompt";
 import { summarizePr } from "./summarizePr";
 
 const OPEN_AI_PRIMING = `${SHARED_PROMPT}
-After the git diff of the first file, there will be an empty line, and then the git diff of the next file. 
+After the git diff of the first file, there will be an empty line, and then the git diff of the next file.
 
 For comments that refer to 1 or 2 modified files,
 add the file names as [path/to/modified/python/file.py], [path/to/another/file.json]
@@ -84,7 +84,7 @@ async function getOpenAICompletion(
       .map((file: any) => formatGitDiff(file.filename, file.patch))
       .join("\n");
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    const openAIPrompt = `${OPEN_AI_PRIMING}\n\nTHE GIT DIFF TO BE SUMMARIZED:\n\`\`\`\n${rawGitDiff}\n\`\`\`\n\nTHE SUMMERY:\n`;
+    const openAIPrompt = `${OPEN_AI_PRIMING}\n\nTHE GIT DIFF TO BE SUMMARIZED:\n\`\`\`\n${rawGitDiff}\n\`\`\`\n\nTHE SUMMARY:\n`;
 
     console.log(
       `OpenAI prompt for commit ${diffMetadata.commit.data.sha}: ${openAIPrompt}`
@@ -208,7 +208,8 @@ export async function summarizeCommits(
     commitSummaries.push([commit.sha, completion]);
 
     // Create a comment on the pull request with the names of the files that were modified in the commit
-    const comment = `GPT summary of ${commit.sha}:\n\n${completion}`;
+    // const comment = `GPT summary of ${commit.sha}:\n\n${completion}`;
+    const comment = `Suggested pull request name:\n\n ${completion}`;
 
     if (commit.sha !== headCommit) {
       await octokit.issues.createComment({

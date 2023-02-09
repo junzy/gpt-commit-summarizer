@@ -2,6 +2,7 @@ import { context } from "@actions/github";
 
 import { summarizeCommits } from "./commitSummary";
 import { getFilesSummaries } from "./filesSummary";
+import { postPRSummary } from "./prSummary";
 
 async function run(): Promise<void> {
   // Get the pull request number and repository owner and name from the context object
@@ -21,7 +22,9 @@ async function run(): Promise<void> {
     repository
   );
 
-  await summarizeCommits(issueNumber, repository, modifiedFilesSummaries);
+  await postPRSummary(issueNumber, repository);
+
+  // await summarizeCommits(issueNumber, repository, modifiedFilesSummaries);
 }
 
 run().catch((error) => {
