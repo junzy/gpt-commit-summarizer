@@ -74,7 +74,12 @@ export async function postPRSummary(
 ) {
 
   // const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, headers: { Accept: "application/vnd.github.v3.diff" } })
-  const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, owner: repository.owner, repo: repository.name, headers: { Accept: 'application/vnd.github.diff', }, })
+  // const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, owner: repository.owner, repo: repository.name, headers: { Accept: 'application/vnd.github.diff', }, })
+  const rawDiff = await octokit.pulls.listFiles({
+    owner: repository.owner.login,
+    repo: repository.name,
+    pull_number: pullNumber,
+  });
   console.log(
     `Raw diff received from GH: ${rawDiff.data}`
   )
