@@ -73,8 +73,11 @@ export async function postPRSummary(
   repository: PayloadRepository
 ) {
 
-  const rawDiff = octokit.request.defaults({ method: "GET", url: `https://github.com/Shopify/${repository}/pull/${pullNumber}.diff` })
-  const prSummary = await getOpenAISummaryForFile(rawDiff);
+  const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository}/pull/${pullNumber}.diff` })
+  console.log(
+    `Raw diff received from GH: ${rawDiff.data}`
+  )
+  const prSummary = await getOpenAISummaryForFile(rawDiff.data);
   console.log(
     `prSummary ${prSummary}`
   );
