@@ -83,7 +83,7 @@ export async function postPRSummary(
   console.log(
     `Raw diff received from GH: ${rawDiff.data}`
   )
-  const prSummary = await getOpenAISummaryForFile(rawDiff.data);
+  const prSummary = await getOpenAISummaryForFile(JSON.stringify(rawDiff.data));
   console.log(
     `prSummary ${prSummary}`
   );
