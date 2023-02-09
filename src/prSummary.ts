@@ -24,7 +24,7 @@ async function getOpenAISummaryForFile(
   prompt: string,
 ): Promise<string> {
   try {
-    const openAIPrompt = `${OPEN_AI_PROMPT}\`\`\`\n\nSUMMARY:\n`;
+    const openAIPrompt = `${OPEN_AI_PROMPT}\`\`\`\n\nSUMMARY:\n ${prompt}`;
     console.log(`OpenAI file summary prompt:\n${openAIPrompt}`);
 
     if (openAIPrompt.length > MAX_OPEN_AI_QUERY_LENGTH) {
@@ -89,7 +89,7 @@ export async function postPRSummary(
   console.log(
     `Raw diff received from GH: ${patch}`
   )
-  const prSummary = await getOpenAISummaryForFile(JSON.stringify(patch));
+  const prSummary = await getOpenAISummaryForFile(patch);
   console.log(
     `prSummary ${prSummary}`
   );
