@@ -73,7 +73,7 @@ export async function postPRSummary(
   repository: PayloadRepository
 ) {
 
-  const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff` })
+  const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, headers: { Accept: "application/vnd.github.v3.diff" } })
   console.log(
     `Raw diff received from GH: ${rawDiff.data}`
   )
