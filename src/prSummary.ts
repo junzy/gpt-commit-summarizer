@@ -84,6 +84,7 @@ export async function postPRSummary(
   patch = "";
   //iterate over listofFiles and get cumulative patch from each file
   for (const file of filesChanged.data) {
+    console.log(`file: ${JSON.stringify(file)}`)
     patch.concat("\n", JSON.stringify(file.patch));
   }
   console.log(
