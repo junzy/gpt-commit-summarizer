@@ -73,8 +73,6 @@ export async function postPRSummary(
   repository: PayloadRepository
 ) {
 
-  // const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, headers: { Accept: "application/vnd.github.v3.diff" } })
-  // const rawDiff = await octokit.request({ method: "GET", url: `https://github.com/Shopify/${repository.name}/pull/${pullNumber}.diff`, owner: repository.owner, repo: repository.name, headers: { Accept: 'application/vnd.github.diff', }, })
   const filesChanged = await octokit.pulls.listFiles({
     owner: repository.owner.login,
     repo: repository.name,
@@ -84,8 +82,9 @@ export async function postPRSummary(
   patch = "";
   //iterate over listofFiles and get cumulative patch from each file
   for (const file of filesChanged.data) {
-    console.log(`file: ${JSON.stringify(file)}`)
-    patch.concat("\n", JSON.stringify(file.patch));
+    console.log(`file: ${JSON.stringify(file.patch)}`)
+    patch = patch.concat(patch, "\n", JSON.stringify(file.patch));
+    console.log(`patch: ${patch}`)
   }
   console.log(
     `Raw diff received from GH: ${patch}`
